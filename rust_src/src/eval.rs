@@ -18,5 +18,7 @@ fn xsignal(error_symbol: LispObject, data: LispObject) {
 
 /// Convenience function for calling `xsignal` with an empty list.
 pub fn xsignal0(error_symbol: LispObject) {
-    xsignal(error_symbol, Qnil);
+    unsafe {
+        xsignal(error_symbol, Qnil);
+    }
 }

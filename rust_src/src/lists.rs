@@ -18,11 +18,7 @@ pub fn CONSP(x: LispObject) -> bool {
 }
 
 fn Fatom(object: LispObject) -> LispObject {
-    if CONSP(object) {
-        Qnil
-    } else {
-        LispObject::constant_t()
-    }
+    LispObject::from_bool(!CONSP(object))
 }
 
 defun!("atom",
@@ -34,11 +30,7 @@ defun!("atom",
        "Return t if OBJECT is not a cons cell.  This includes nil.");
 
 fn Fconsp(object: LispObject) -> LispObject {
-    if CONSP(object) {
-        LispObject::constant_t()
-    } else {
-        Qnil
-    }
+    LispObject::from_bool(CONSP(object))
 }
 
 defun!("consp",
@@ -144,7 +136,7 @@ defun!("setcdr",
 
 /// Is `object` nil?
 pub fn NILP(object: LispObject) -> bool {
-    object == Qnil
+    unsafe { object == Qnil }
 }
 
 unsafe fn XCAR(object: LispObject) -> LispObject {
@@ -165,7 +157,7 @@ fn car(object: LispObject) -> LispObject {
     if CONSP(object) {
         unsafe { XCAR(object) }
     } else if NILP(object) {
-        Qnil
+        unsafe { Qnil }
     } else {
         unsafe { wrong_type_argument(Qlistp, object) }
     }
@@ -174,7 +166,7 @@ fn cdr(object: LispObject) -> LispObject {
     if CONSP(object) {
         unsafe { XCDR(object) }
     } else if NILP(object) {
-        Qnil
+        unsafe { Qnil }
     } else {
         unsafe { wrong_type_argument(Qlistp, object) }
     }
@@ -227,7 +219,7 @@ pub extern "C" fn Flistp(object: LispObject) -> LispObject {
     if CONSP(object) || NILP(object) {
         LispObject::constant_t()
     } else {
-        Qnil
+        unsafe { Qnil }
     }
 }
 
@@ -244,7 +236,7 @@ defun!("listp",
 
 fn Fnlistp(object: LispObject) -> LispObject {
     if CONSP(object) || NILP(object) {
-        Qnil
+        unsafe { Qnil }
     } else {
         LispObject::constant_t()
     }

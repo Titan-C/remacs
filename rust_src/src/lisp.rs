@@ -63,6 +63,7 @@ extern "C" {
     pub fn STRING_BYTES(s: *mut LispString) -> libc::ptrdiff_t;
     pub fn STRING_MULTIBYTE(a: LispObject) -> bool;
     pub fn SSDATA(string: LispObject) -> *mut libc::c_char;
+    pub static Qnil: LispObject;
     pub static Qt: LispObject;
     pub static Qarith_error: LispObject;
     pub static Qnumber_or_marker_p: LispObject;
@@ -72,8 +73,6 @@ extern "C" {
     fn make_float(float_value: f64) -> LispObject;
 }
 
-pub const Qnil: LispObject = LispObject(0);
-
 impl LispObject {
     #[inline]
     pub fn constant_t() -> LispObject {
@@ -82,16 +81,12 @@ impl LispObject {
 
     #[inline]
     pub fn constant_nil() -> LispObject {
-        Qnil
+        unsafe { Qnil }
     }
 
     #[inline]
     pub fn from_bool(v: bool) -> LispObject {
-        if v {
-            unsafe { Qt }
-        } else {
-            Qnil
-        }
+        if v { unsafe { Qt } } else { unsafe { Qnil } }
     }
 
     #[inline]

@@ -54,7 +54,7 @@ defun!("eq",
 (fn OBJECT OBJECT)");
 
 fn Fnull(object: LispObject) -> LispObject {
-    LispObject::from_bool(object == Qnil)
+    LispObject::from_bool(unsafe { object == Qnil })
 }
 
 defun!("null",
