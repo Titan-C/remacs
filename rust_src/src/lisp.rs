@@ -54,8 +54,20 @@ pub const GCTYPEBITS: EmacsInt = 3;
 #[cfg(dummy = "impossible")]
 pub const USE_LSB_TAG: bool = true;
 
-#[repr(C)]
-#[derive(PartialEq, Eq, Clone, Copy)]
+pub type LispObject = EmacsInt;
+
+/// Since `LispObject` is a type alias, we can't define methods on it
+/// without defining a separate trait.
+trait LispObjectTrait {
+    pub fn constant_t() -> Self;
+}
+
+impl LispObjectTrait for LispObject {
+    pub fn constant_t() -> LispObject {
+        unsafe { Qt }
+    }
+}
+
 pub struct LispObject(EmacsInt);
 
 extern "C" {
@@ -75,11 +87,6 @@ extern "C" {
 pub const Qnil: LispObject = LispObject(0);
 
 impl LispObject {
-    #[inline]
-    pub fn constant_t() -> LispObject {
-        unsafe { Qt }
-    }
-
     #[inline]
     pub fn constant_nil() -> LispObject {
         Qnil
